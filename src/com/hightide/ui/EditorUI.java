@@ -1,4 +1,4 @@
-package com.scripty.ui;
+package com.hightide.ui;
 
 import javax.swing.*;
 

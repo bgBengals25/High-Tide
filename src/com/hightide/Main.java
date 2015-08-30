@@ -1,4 +1,4 @@
-package com.scripty;
+package com.hightide;
 
 /**
  * Created by peter on 8/30/15.
