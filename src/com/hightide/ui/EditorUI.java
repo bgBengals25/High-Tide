@@ -1,7 +1,11 @@
 package com.hightide.ui;
 
 import javax.swing.*;
+import javax.swing.event.MenuKeyEvent;
+import javax.swing.event.MenuKeyListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by peter on 8/30/15.
@@ -30,6 +34,13 @@ public class EditorUI extends JFrame {
         fileMenu.add(miSave);
         fileMenu.addSeparator();
         JMenuItem miExit = new JMenuItem("Exit");
+        fileMenu.add(miExit);
+        miExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                System.exit(0);
+            }
+        });
 
 
 
