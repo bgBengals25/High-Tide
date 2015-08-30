@@ -46,6 +46,7 @@ public class EditorUI extends JFrame {
         });
         // Set up Edit Menu
         JMenu editMenu = new JMenu("Edit");
+        menuBar.add(editMenu);
         JMenuItem miUndo = new JMenuItem("Undo");
         editMenu.add(miUndo);
         JMenuItem miRedo = new JMenuItem("Redo");
@@ -60,6 +61,18 @@ public class EditorUI extends JFrame {
         editMenu.addSeparator();
         JMenuItem miSelectAll = new JMenuItem("Select All");
         editMenu.add(miSelectAll);
+        // Set up Tools Menu
+        JMenu toolsMenu = new JMenu("Tools");
+        menuBar.add(toolsMenu);
+        JMenuItem miRunAs = new JMenuItem("Run As...");
+        toolsMenu.add(miRunAs);
+        JMenuItem miSearchManual = new JMenuItem("Search Manual");
+        toolsMenu.add(miSearchManual);
+        JMenuItem miSearchManualFor = new JMenuItem("Search Manual For...");
+        toolsMenu.add(miSearchManualFor);
+        toolsMenu.addSeparator();
+        JMenuItem miSettings = new JMenuItem("Settings");
+        toolsMenu.add(miSettings);
 
 
 
