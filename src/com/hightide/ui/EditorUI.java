@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
  * Created by peter on 8/30/15.
@@ -64,8 +66,10 @@ public class EditorUI extends JFrame {
         // Set up Tools Menu
         JMenu toolsMenu = new JMenu("Tools");
         menuBar.add(toolsMenu);
-        JMenuItem miRunAs = new JMenuItem("Run As...");
-        toolsMenu.add(miRunAs);
+        JMenu RunAs = new JMenu("Run As...");
+        JMenuItem miBashScript = new JMenuItem("Bash Script");
+        RunAs.add(miBashScript);
+        toolsMenu.add(RunAs);
         JMenuItem miSearchManual = new JMenuItem("Search Manual");
         toolsMenu.add(miSearchManual);
         JMenuItem miSearchManualFor = new JMenuItem("Search Manual For...");
@@ -81,6 +85,31 @@ public class EditorUI extends JFrame {
         container.setLayout(new BorderLayout());
         textArea = new JTextArea();
         container.add(new JScrollPane(textArea), BorderLayout.CENTER);
+        // Set up Pop-Up Menu
+        final JPopupMenu pup = new JPopupMenu();
+        JMenuItem pmiCut = new JMenuItem("Cut");
+        pup.add(pmiCut);
+        JMenuItem pmiCopy = new JMenuItem("Copy");
+        pup.add(pmiCopy);
+        JMenuItem pmiPaste = new JMenuItem("Paste");
+        pup.add(pmiPaste);
+        pup.addSeparator();
+        JMenuItem pmiSelectAll = new JMenuItem("Select All");
+        pup.add(pmiSelectAll);
+        // More Pop-Up Setup
+        textArea.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger())
+                    pup.show(textArea, e.getX(), e.getY());
+            }
+        });
+
+
+
+        // JToolBar Setup
+        JToolBar toolbar = new JToolBar();
+        container.add(toolbar, BorderLayout.NORTH);
 
 
 
