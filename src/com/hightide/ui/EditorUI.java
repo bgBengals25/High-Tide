@@ -1,8 +1,6 @@
 package com.hightide.ui;
 
 import javax.swing.*;
-import javax.swing.event.MenuKeyEvent;
-import javax.swing.event.MenuKeyListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,15 +21,20 @@ public class EditorUI extends JFrame {
         // Set up Menu Bar
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
-        // Set up Menu
+        // Set up File Menu
         JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
         JMenuItem miNew = new JMenuItem("New");
         fileMenu.add(miNew);
-        JMenuItem miOpen = new JMenuItem("Open");
+        JMenuItem miOpen = new JMenuItem("Open...");
         fileMenu.add(miOpen);
+        JMenuItem miClose = new JMenuItem("Close");
+        fileMenu.add(miClose);
+        fileMenu.addSeparator();
         JMenuItem miSave = new JMenuItem("Save");
         fileMenu.add(miSave);
+        JMenuItem miSaveAs = new JMenuItem("Save As...");
+        fileMenu.add(miSaveAs);
         fileMenu.addSeparator();
         JMenuItem miExit = new JMenuItem("Exit");
         fileMenu.add(miExit);
@@ -41,6 +44,22 @@ public class EditorUI extends JFrame {
                 System.exit(0);
             }
         });
+        // Set up Edit Menu
+        JMenu editMenu = new JMenu("Edit");
+        JMenuItem miUndo = new JMenuItem("Undo");
+        editMenu.add(miUndo);
+        JMenuItem miRedo = new JMenuItem("Redo");
+        editMenu.add(miRedo);
+        editMenu.addSeparator();
+        JMenuItem miCut = new JMenuItem("Cut");
+        editMenu.add(miCut);
+        JMenuItem miCopy = new JMenuItem("Copy");
+        editMenu.add(miCopy);
+        JMenuItem miPaste = new JMenuItem("Paste");
+        editMenu.add(miPaste);
+        editMenu.addSeparator();
+        JMenuItem miSelectAll = new JMenuItem("Select All");
+        editMenu.add(miSelectAll);
 
 
 
