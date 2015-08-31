@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<theme name="Ocean">
+    <font name="plaintext" type="normal" color="black" family="Arial" size="12"/>
+    <font name="keywordtext" type="bold" color="blue" family="Arial" size="13"/>
+    <font name="oskeywordtext" type="bold" color="blue" family="Arial" size="12"/>
+    <font name="quotetext" type="normal" color="green" family="Arial" size="12"/>
+    <font name="comment" type="italics" color="red" family="Arial" size="11"/>
+    <backgroundcolor>white</backgroundcolor>
+</theme>
