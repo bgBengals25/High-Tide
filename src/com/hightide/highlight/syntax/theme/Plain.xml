@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<theme name="Ocean">
+<theme name="Plain">
     <font name="plaintext" type="normal" color="black" family="Arial" size="12"/>
     <font name="keywordtext" type="normal" color="black" family="Arial" size="12"/>
     <font name="oskeywordtext" type="normal" color="black" family="Arial" size="12"/>
