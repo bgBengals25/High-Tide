@@ -52,13 +52,13 @@ public class EditorUI extends JFrame {
         fileMenu.addSeparator();
         JMenuItem miSave = new JMenuItem("Save");
         miSave.setMnemonic(KeyEvent.VK_S);
-        miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
         miSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 saveSelectedTab();
             }
         });
+        miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
         fileMenu.add(miSave);
         JMenuItem miSaveAs = new JMenuItem("Save As...");
         miSaveAs.addActionListener(new ActionListener() {
@@ -74,7 +74,10 @@ public class EditorUI extends JFrame {
         miExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                System.exit(0);
+                int reply = JOptionPane.showConfirmDialog(null, "Exit High Tide?", "High Tide - Exit", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION){
+                    System.exit(0);
+                }
             }
         });
         // Set up Edit Menu
@@ -200,11 +203,55 @@ public class EditorUI extends JFrame {
 
 
         // Initialize the Frame
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                int reply = JOptionPane.showConfirmDialog(null, "Exit High Tide?", "High Tide - Exit", JOptionPane.YES_NO_OPTION);
+                if (reply == JOptionPane.YES_OPTION){
+                    System.exit(0);
+                }
+            }
+
+            @Override
+            public void windowClosed(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowIconified(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowActivated(WindowEvent windowEvent) {
+
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent windowEvent) {
+
+            }
+        });
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         setLocationRelativeTo(null);
         setTitle(WINDOW_INIT_TITLE);
         setVisible(true);
+    }
+
+    public void exit() {
+
+
     }
 
 
@@ -218,23 +265,43 @@ public class EditorUI extends JFrame {
 
 
 
-    public final void addEditorTab(String title, String content, String path){
+    public final void addEditorTab(String title, String content, String path, Boolean saved){
 
-        final EditorArea editor = new EditorArea(content, path);
+        final EditorArea editor = new EditorArea(content, path, saved);
         editor.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.isPopupTrigger())
                     pup.show(editor, e.getX(), e.getY());
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger())
                     pup.show(editor, e.getX(), e.getY());
             }
         });
-
         tabbedPane.addTab(title, new JScrollPane(editor));
+        editor.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent keyEvent) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+                if (!(keyEvent.getKeyCode() == KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK).getKeyCode())) {
+                    editor.setSaved(false);
+                    if (!tabbedPane.getTitleAt(tabbedPane.getSelectedIndex()).endsWith("*"))
+                        tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), tabbedPane.getTitleAt(tabbedPane.getSelectedIndex()) + "*");
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+
+            }
+        });
     }
 
 
@@ -250,9 +317,9 @@ public class EditorUI extends JFrame {
     public void saveSelectedTab(){
 
         try {
+            System.out.println("Save!");
             JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
             EditorArea ea = (EditorArea)viewport.getView();
-            System.out.println(ea.getPath());
             if (ea.getPath() == null) {
                 saveSelectedTabAs();
             }else{
@@ -262,6 +329,12 @@ public class EditorUI extends JFrame {
                     writer.println(lines[i]);
                 writer.flush();
                 writer.close();
+                ea.setSaved(true);
+                if(tabbedPane.getTitleAt(tabbedPane.getSelectedIndex()).endsWith("*")) {
+                    String currentTitle = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+                    String newTitle = currentTitle.substring(0, currentTitle.indexOf("*"));
+                    tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), newTitle);
+                }
             }
         }catch(Exception e){
             System.out.println("Something went wrong:\n"+e.getMessage());
@@ -309,7 +382,7 @@ public class EditorUI extends JFrame {
                     data = sb.toString();
                 } finally {
                     br.close();
-                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getPath());
+                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getPath(), true);
                 }
             }
         }catch(Exception e){
@@ -331,7 +404,7 @@ public class EditorUI extends JFrame {
             if (source instanceof JMenuItem){
 
                 if (actionEvent.getActionCommand() == "New"){
-                    addEditorTab("Untitled", null, null);
+                    addEditorTab("Untitled", null, null, true);
                 }else if (actionEvent.getActionCommand() == "Close") {
                     removeSelectedEditorTab();
                 }else if (actionEvent.getActionCommand() == "Save"){
@@ -341,7 +414,7 @@ public class EditorUI extends JFrame {
             else if (source instanceof JButton){
 
                 if (((JButton)actionEvent.getSource()).getToolTipText() == "New Tab") {
-                    addEditorTab("Untitled", null, null);
+                    addEditorTab("Untitled", null, null, true);
                 }else if (((JButton)actionEvent.getSource()).getToolTipText() == "Close Current Tab"){
                     removeSelectedEditorTab();
                 }

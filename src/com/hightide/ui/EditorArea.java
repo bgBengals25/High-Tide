@@ -9,17 +9,19 @@ public class EditorArea extends JTextArea{
 
     private String path;
     private String content;
+    private Boolean saved;
 
     public EditorArea(){
 
         super();
     }
 
-    public EditorArea(String content, String path){
+    public EditorArea(String content, String path, Boolean saved){
 
         super(content);
         this.content = content;
         this.path = path;
+        this.saved = saved;
     }
 
     public String getPath(){
@@ -34,7 +36,15 @@ public class EditorArea extends JTextArea{
         return content;
     }
 
-    public void setContent(String content){
+    public void setContent(String content) {
         this.content = content;
+    }
+
+    public Boolean isSaved() {
+        return saved;
+    }
+
+    public void setSaved(Boolean saved) {
+        this.saved = saved;
     }
 }
