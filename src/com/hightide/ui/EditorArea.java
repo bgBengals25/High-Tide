@@ -5,7 +5,7 @@ import javax.swing.*;
 /**
  * Created by peter on 8/30/15.
  */
-public class EditorArea extends JTextArea{
+public class EditorArea extends JTextPane{
 
     private String path;
     private String content;
@@ -18,7 +18,7 @@ public class EditorArea extends JTextArea{
 
     public EditorArea(String content, String path, Boolean saved){
 
-        super(content);
+        setText(content);
         this.content = content;
         this.path = path;
         this.saved = saved;
