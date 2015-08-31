@@ -6,16 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.PrintWriter;
 
 /**
  * Created by peter on 8/30/15.
  */
 public class EditorUI extends JFrame {
 
-    private JTextArea textArea;
+    //private JTextArea textArea;
+    private JTabbedPane tabbedPane;
+    private JPopupMenu pup;
 
-    public int WINDOW_WIDTH = 700;
-    public int WINDOW_HEIGHT = 450;
+    public int WINDOW_WIDTH = 800;
+    public int WINDOW_HEIGHT = 600;
     public String WINDOW_INIT_TITLE = "High Tide Scripting Editor";
 
     public EditorUI(){
@@ -27,10 +30,12 @@ public class EditorUI extends JFrame {
         JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
         JMenuItem miNew = new JMenuItem("New");
+        miNew.addActionListener(new EditorEventListener());
         fileMenu.add(miNew);
         JMenuItem miOpen = new JMenuItem("Open...");
         fileMenu.add(miOpen);
         JMenuItem miClose = new JMenuItem("Close");
+        miClose.addActionListener(new EditorEventListener());
         fileMenu.add(miClose);
         fileMenu.addSeparator();
         JMenuItem miSave = new JMenuItem("Save");
@@ -49,11 +54,6 @@ public class EditorUI extends JFrame {
         // Set up Edit Menu
         JMenu editMenu = new JMenu("Edit");
         menuBar.add(editMenu);
-        JMenuItem miUndo = new JMenuItem("Undo");
-        editMenu.add(miUndo);
-        JMenuItem miRedo = new JMenuItem("Redo");
-        editMenu.add(miRedo);
-        editMenu.addSeparator();
         JMenuItem miCut = new JMenuItem("Cut");
         editMenu.add(miCut);
         JMenuItem miCopy = new JMenuItem("Copy");
@@ -83,10 +83,19 @@ public class EditorUI extends JFrame {
         // Frame set up
         Container container = getContentPane();
         container.setLayout(new BorderLayout());
-        textArea = new JTextArea();
-        container.add(new JScrollPane(textArea), BorderLayout.CENTER);
+
+
+
+        // Set up JTabbedPane
+        tabbedPane = new JTabbedPane();
+        container.add(tabbedPane, BorderLayout.CENTER);
+
+
+
+        //textArea = new JTextArea();
+        //container.add(new JScrollPane(textArea), BorderLayout.CENTER);
         // Set up Pop-Up Menu
-        final JPopupMenu pup = new JPopupMenu();
+        pup = new JPopupMenu();
         JMenuItem pmiCut = new JMenuItem("Cut");
         pup.add(pmiCut);
         JMenuItem pmiCopy = new JMenuItem("Copy");
@@ -97,28 +106,43 @@ public class EditorUI extends JFrame {
         JMenuItem pmiSelectAll = new JMenuItem("Select All");
         pup.add(pmiSelectAll);
         // More Pop-Up Setup
-        textArea.addMouseListener(new MouseAdapter() {
+        /*textArea.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.isPopupTrigger())
                     pup.show(textArea, e.getX(), e.getY());
             }
-        });
+        });*/
 
 
 
         // JToolBar Setup
         JToolBar toolbar = new JToolBar();
         container.add(toolbar, BorderLayout.NORTH);
+        JButton newButton = new JButton(new ImageIcon("res/drop29.png"));
+        newButton.setToolTipText("New Tab");
+        newButton.addActionListener(new EditorEventListener());
+        toolbar.add(newButton);
+        JButton closeButton = new JButton(new ImageIcon("res/cross105.png"));
+        closeButton.setToolTipText("Close Current Tab");
+        closeButton.addActionListener(new EditorEventListener());
+        toolbar.add(closeButton);
+        toolbar.addSeparator();
         JButton saveButton = new JButton(new ImageIcon("res/anchor39.png"));
         saveButton.setToolTipText("Save");
         toolbar.add(saveButton);
         JButton openButton = new JButton(new ImageIcon("res/padlock48.png"));
         openButton.setToolTipText("Open");
         toolbar.add(openButton);
+        toolbar.addSeparator();
         JButton runButton = new JButton(new ImageIcon("res/playbutton.png"));
         runButton.setToolTipText("Run Script!");
         toolbar.add(runButton);
+
+
+
+        // Load first Window
+        addEditorTab("Untitled", null, null);
 
 
 
@@ -128,5 +152,105 @@ public class EditorUI extends JFrame {
         setLocationRelativeTo(null);
         setTitle(WINDOW_INIT_TITLE);
         setVisible(true);
+    }
+
+    public final void addEditorTab(String title, String content, String path){
+
+        final EditorArea editor = new EditorArea(content, null);
+        editor.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger())
+                    pup.show(editor, e.getX(), e.getY());
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger())
+                    pup.show(editor, e.getX(), e.getY());
+            }
+        });
+
+        tabbedPane.addTab(title, new JScrollPane(editor));
+    }
+
+
+
+    public void removeSelectedEditorTab(){
+
+        int selectedTabIndex = tabbedPane.getSelectedIndex();
+        tabbedPane.removeTabAt(selectedTabIndex);
+    }
+
+
+
+    public void saveSelectedTab(){
+
+        try {
+            EditorArea ea = (EditorArea)tabbedPane.getSelectedComponent();
+            if (ea.getPath() == null) {
+                saveSelectedTabAs();
+            }else{
+                PrintWriter writer = new PrintWriter(ea.getPath(), "UTF-8");
+                String[] lines = ea.getText().split("\\n");
+                for (int i=0; i<lines.length; i++)
+                    writer.println(lines[i]);
+                writer.flush();
+                writer.close();
+            }
+        }catch(Exception e){
+            System.out.println("Something went wrong:\n"+e.getMessage());
+        }
+    }
+
+
+
+    public void saveSelectedTabAs(){
+
+        try {
+            EditorArea ea = (EditorArea)tabbedPane.getSelectedComponent();
+            JFileChooser jfc = new JFileChooser();
+            jfc.setDialogTitle("Save As...");
+            int userSelection = jfc.showSaveDialog(this);
+            if (userSelection == jfc.APPROVE_OPTION)
+                ea.setPath(jfc.getSelectedFile().getAbsolutePath());
+                tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), jfc.getSelectedFile().getName());
+            saveSelectedTab();
+        }catch(Exception e){
+            System.out.println("Something went wrong:\n"+e.getMessage());
+        }
+    }
+
+
+
+    private class EditorEventListener implements ActionListener{
+
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+
+            Object source = actionEvent.getSource();
+
+            if (source instanceof JMenuItem){
+
+                if (actionEvent.getActionCommand() == "New"){
+                    addEditorTab("Untitled", null, null);
+                }else if (actionEvent.getActionCommand() == "Close") {
+                    removeSelectedEditorTab();
+                }else if (actionEvent.getActionCommand() == "Save"){
+
+                }
+            }
+            else if (source instanceof JButton){
+
+                if (((JButton)actionEvent.getSource()).getToolTipText() == "New Tab") {
+                    addEditorTab("Untitled", null, null);
+                }else if (((JButton)actionEvent.getSource()).getToolTipText() == "Close Current Tab"){
+                    removeSelectedEditorTab();
+                }
+            }
+
+
+        }
     }
 }
