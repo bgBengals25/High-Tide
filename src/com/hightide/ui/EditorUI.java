@@ -1,11 +1,9 @@
 package com.hightide.ui;
 
 import javax.swing.*;
+import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
@@ -32,9 +30,13 @@ public class EditorUI extends JFrame {
         JMenu fileMenu = new JMenu("File");
         menuBar.add(fileMenu);
         JMenuItem miNew = new JMenuItem("New");
+        miNew.setMnemonic(KeyEvent.VK_N);
+        miNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
         miNew.addActionListener(new EditorEventListener());
         fileMenu.add(miNew);
         JMenuItem miOpen = new JMenuItem("Open...");
+        miOpen.setMnemonic(KeyEvent.VK_O);
+        miOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
         miOpen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -43,10 +45,14 @@ public class EditorUI extends JFrame {
         });
         fileMenu.add(miOpen);
         JMenuItem miClose = new JMenuItem("Close");
+        miClose.setMnemonic(KeyEvent.VK_ESCAPE);
+        miClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, KeyEvent.CTRL_MASK));
         miClose.addActionListener(new EditorEventListener());
         fileMenu.add(miClose);
         fileMenu.addSeparator();
         JMenuItem miSave = new JMenuItem("Save");
+        miSave.setMnemonic(KeyEvent.VK_S);
+        miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
         miSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -74,14 +80,21 @@ public class EditorUI extends JFrame {
         // Set up Edit Menu
         JMenu editMenu = new JMenu("Edit");
         menuBar.add(editMenu);
-        JMenuItem miCut = new JMenuItem("Cut");
+        JMenuItem miCut = new JMenuItem(new DefaultEditorKit.CutAction());
+        miCut.setText("Cut");
+        miCut.setMnemonic(KeyEvent.VK_X);
         editMenu.add(miCut);
-        JMenuItem miCopy = new JMenuItem("Copy");
+        JMenuItem miCopy = new JMenuItem(new DefaultEditorKit.CopyAction());
+        miCopy.setText("Copy");
+        miCopy.setMnemonic(KeyEvent.VK_C);
         editMenu.add(miCopy);
-        JMenuItem miPaste = new JMenuItem("Paste");
+        JMenuItem miPaste = new JMenuItem(new DefaultEditorKit.PasteAction());
+        miPaste.setText("Paste");
+        miPaste.setMnemonic(KeyEvent.VK_V);
         editMenu.add(miPaste);
         editMenu.addSeparator();
         JMenuItem miSelectAll = new JMenuItem("Select All");
+        miSelectAll.setMnemonic(KeyEvent.VK_A);
         miSelectAll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -181,6 +194,7 @@ public class EditorUI extends JFrame {
         toolbar.addSeparator();
         JButton runButton = new JButton(new ImageIcon("res/playbutton.png"));
         runButton.setToolTipText("Run Script!");
+        runButton.setMnemonic(KeyEvent.VK_R);
         toolbar.add(runButton);
 
 
