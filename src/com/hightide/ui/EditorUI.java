@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.PrintWriter;
 
 /**
@@ -33,14 +35,32 @@ public class EditorUI extends JFrame {
         miNew.addActionListener(new EditorEventListener());
         fileMenu.add(miNew);
         JMenuItem miOpen = new JMenuItem("Open...");
+        miOpen.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                openFile();
+            }
+        });
         fileMenu.add(miOpen);
         JMenuItem miClose = new JMenuItem("Close");
         miClose.addActionListener(new EditorEventListener());
         fileMenu.add(miClose);
         fileMenu.addSeparator();
         JMenuItem miSave = new JMenuItem("Save");
+        miSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                saveSelectedTab();
+            }
+        });
         fileMenu.add(miSave);
         JMenuItem miSaveAs = new JMenuItem("Save As...");
+        miSaveAs.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                saveSelectedTabAs();
+            }
+        });
         fileMenu.add(miSaveAs);
         fileMenu.addSeparator();
         JMenuItem miExit = new JMenuItem("Exit");
@@ -62,6 +82,12 @@ public class EditorUI extends JFrame {
         editMenu.add(miPaste);
         editMenu.addSeparator();
         JMenuItem miSelectAll = new JMenuItem("Select All");
+        miSelectAll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                selectAll();
+            }
+        });
         editMenu.add(miSelectAll);
         // Set up Tools Menu
         JMenu toolsMenu = new JMenu("Tools");
@@ -104,6 +130,12 @@ public class EditorUI extends JFrame {
         pup.add(pmiPaste);
         pup.addSeparator();
         JMenuItem pmiSelectAll = new JMenuItem("Select All");
+        pmiSelectAll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                selectAll();
+            }
+        });
         pup.add(pmiSelectAll);
         // More Pop-Up Setup
         /*textArea.addMouseListener(new MouseAdapter() {
@@ -130,19 +162,26 @@ public class EditorUI extends JFrame {
         toolbar.addSeparator();
         JButton saveButton = new JButton(new ImageIcon("res/anchor39.png"));
         saveButton.setToolTipText("Save");
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                saveSelectedTab();
+            }
+        });
         toolbar.add(saveButton);
         JButton openButton = new JButton(new ImageIcon("res/padlock48.png"));
         openButton.setToolTipText("Open");
+        openButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                openFile();
+            }
+        });
         toolbar.add(openButton);
         toolbar.addSeparator();
         JButton runButton = new JButton(new ImageIcon("res/playbutton.png"));
         runButton.setToolTipText("Run Script!");
         toolbar.add(runButton);
-
-
-
-        // Load first Window
-        addEditorTab("Untitled", null, null);
 
 
 
@@ -154,9 +193,20 @@ public class EditorUI extends JFrame {
         setVisible(true);
     }
 
+
+    public void selectAll(){
+
+        JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
+        EditorArea ea = (EditorArea)viewport.getView();
+        ea.requestFocusInWindow();
+        ea.selectAll();
+    }
+
+
+
     public final void addEditorTab(String title, String content, String path){
 
-        final EditorArea editor = new EditorArea(content, null);
+        final EditorArea editor = new EditorArea(content, path);
         editor.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -186,7 +236,9 @@ public class EditorUI extends JFrame {
     public void saveSelectedTab(){
 
         try {
-            EditorArea ea = (EditorArea)tabbedPane.getSelectedComponent();
+            JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
+            EditorArea ea = (EditorArea)viewport.getView();
+            System.out.println(ea.getPath());
             if (ea.getPath() == null) {
                 saveSelectedTabAs();
             }else{
@@ -207,7 +259,8 @@ public class EditorUI extends JFrame {
     public void saveSelectedTabAs(){
 
         try {
-            EditorArea ea = (EditorArea)tabbedPane.getSelectedComponent();
+            JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
+            EditorArea ea = (EditorArea)viewport.getView();
             JFileChooser jfc = new JFileChooser();
             jfc.setDialogTitle("Save As...");
             int userSelection = jfc.showSaveDialog(this);
@@ -215,6 +268,36 @@ public class EditorUI extends JFrame {
                 ea.setPath(jfc.getSelectedFile().getAbsolutePath());
                 tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), jfc.getSelectedFile().getName());
             saveSelectedTab();
+        }catch(Exception e){
+            System.out.println("Something went wrong:\n"+e.getMessage());
+        }
+    }
+
+
+
+    public void openFile(){
+        try{
+            String data = "Failed to Load File!!!";
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Open...");
+            int userSelection = fileChooser.showOpenDialog(this);
+            if (userSelection == fileChooser.APPROVE_OPTION){
+                BufferedReader br = new BufferedReader(new FileReader(fileChooser.getSelectedFile()));
+                try {
+                    StringBuilder sb = new StringBuilder();
+                    String line = br.readLine();
+
+                    while (line != null) {
+                        sb.append(line);
+                        sb.append(System.lineSeparator());
+                        line = br.readLine();
+                    }
+                    data = sb.toString();
+                } finally {
+                    br.close();
+                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getPath());
+                }
+            }
         }catch(Exception e){
             System.out.println("Something went wrong:\n"+e.getMessage());
         }
