@@ -110,6 +110,15 @@ public class EditorUI extends JFrame {
         // JToolBar Setup
         JToolBar toolbar = new JToolBar();
         container.add(toolbar, BorderLayout.NORTH);
+        JButton saveButton = new JButton(new ImageIcon("res/anchor39.png"));
+        saveButton.setToolTipText("Save");
+        toolbar.add(saveButton);
+        JButton openButton = new JButton(new ImageIcon("res/padlock48.png"));
+        openButton.setToolTipText("Open");
+        toolbar.add(openButton);
+        JButton runButton = new JButton(new ImageIcon("res/playbutton.png"));
+        runButton.setToolTipText("Run Script!");
+        toolbar.add(runButton);
 
 
 
