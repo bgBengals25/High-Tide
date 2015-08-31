@@ -20,6 +20,4 @@ public class ThemeLoader {
     public void getOSKeyWordText(){
 
     }
-
-    public void get
 }
