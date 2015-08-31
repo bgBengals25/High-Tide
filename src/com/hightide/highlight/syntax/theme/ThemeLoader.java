@@ -5,7 +5,9 @@ package com.hightide.highlight.syntax.theme;
  */
 public class ThemeLoader {
 
-    public ThemeLoader(){
+    private Theme THEME;
+
+    public ThemeLoader(Theme theme){
 
     }
 
