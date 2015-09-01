@@ -1,5 +1,6 @@
 package com.hightide.ui;
 
+import com.hightide.ui.terminal.JTerminal;
 import jsyntaxpane.syntaxkits.BashSyntaxKit;
 import jsyntaxpane.syntaxkits.PythonSyntaxKit;
 
@@ -133,7 +134,16 @@ public class EditorUI extends JFrame {
 
         // Set up JTabbedPane
         tabbedPane = new JTabbedPane();
-        container.add(tabbedPane, BorderLayout.CENTER);
+        //container.add(tabbedPane, BorderLayout.CENTER);
+
+        // Initialize JTerminal
+        JTerminal term = new JTerminal();
+        //container.add(term, BorderLayout.SOUTH);
+
+        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabbedPane, term);
+        sp.setDividerLocation(425);
+        container.add(sp);
+
 
 
 
@@ -215,7 +225,7 @@ public class EditorUI extends JFrame {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 int reply = JOptionPane.showConfirmDialog(null, "Exit High Tide?", "High Tide - Exit", JOptionPane.YES_NO_OPTION);
-                if (reply == JOptionPane.YES_OPTION){
+                if (reply == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }
             }
