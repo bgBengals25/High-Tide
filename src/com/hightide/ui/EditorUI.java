@@ -267,9 +267,9 @@ public class EditorUI extends JFrame {
 
 
 
-    public final void addEditorTab(String title, String content, String path, Boolean saved, StyledDocument sd){
+    public final void addEditorTab(String title, String content, String path, Boolean saved){
 
-        final EditorArea editor = new EditorArea(content, path, saved, sd);
+        final EditorArea editor = new EditorArea(content, path, saved);
         Theme ocean = new Theme("Ocean", new File("res/themes/Ocean.xml"));
         HighlightManager.bindHighlighter("Bash", editor, ocean);
         editor.addMouseListener(new MouseAdapter() {
@@ -386,7 +386,7 @@ public class EditorUI extends JFrame {
                     data = sb.toString();
                 } finally {
                     br.close();
-                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getPath(), true, (StyledDocument) new DefaultStyledDocument());
+                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getPath(), true);
                 }
             }
         }catch(Exception e){
@@ -408,7 +408,7 @@ public class EditorUI extends JFrame {
             if (source instanceof JMenuItem){
 
                 if (actionEvent.getActionCommand() == "New"){
-                    addEditorTab("Untitled", null, null, true, (StyledDocument) new DefaultStyledDocument());
+                    addEditorTab("Untitled", null, null, true);
                 }else if (actionEvent.getActionCommand() == "Close") {
                     removeSelectedEditorTab();
                 }else if (actionEvent.getActionCommand() == "Save"){
@@ -417,7 +417,7 @@ public class EditorUI extends JFrame {
             }
             else {
                 if (source instanceof JButton) if (((JButton) actionEvent.getSource()).getToolTipText() == "New Tab")
-                    addEditorTab("Untitled", null, null, true, (StyledDocument) new DefaultStyledDocument());
+                    addEditorTab("Untitled", null, null, true);
                 else if (((JButton) actionEvent.getSource()).getToolTipText() == "Close Current Tab") {
                     removeSelectedEditorTab();
                 }

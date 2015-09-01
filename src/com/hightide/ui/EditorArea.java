@@ -15,15 +15,14 @@ public class EditorArea extends JTextPane{
     public static StyledDocument DOC = (StyledDocument) new DefaultStyledDocument();
     private StyledDocument doc;
 
-    public EditorArea(String content, String path, Boolean saved, StyledDocument doc){
+    public EditorArea(String content, String path, Boolean saved){
 
-        super();
-        setDocument(doc);
+        super(DOC);
         setText(content);
         this.content = content;
         this.path = path;
         this.saved = saved;
-        this.doc = doc;
+        doc = DOC;
     }
 
     public String getPath(){

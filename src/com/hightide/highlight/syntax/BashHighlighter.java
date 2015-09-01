@@ -23,6 +23,7 @@ public class BashHighlighter implements Highlighter {
     public BashHighlighter(EditorArea ea, Theme th){
 
         EDITOR_AREA = ea;
+        THEME = th;
         ea.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent keyEvent) {
@@ -39,7 +40,6 @@ public class BashHighlighter implements Highlighter {
                 highlight();
             }
         });
-        THEME = th;
         highlight();
     }
 
