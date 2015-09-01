@@ -23,6 +23,8 @@ public class EditorArea extends JEditorPane{
 
         if(type.equals("application/x-bsh")){
         }
+
+        setText(content);
     }
 
     public String getPath(){

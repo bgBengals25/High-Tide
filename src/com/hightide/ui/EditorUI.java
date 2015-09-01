@@ -316,6 +316,7 @@ public class EditorUI extends JFrame {
         BashSyntaxKit.initKit();
         PythonSyntaxKit.initKit();
         editor.setContentType("text/bash");
+        editor.setText(content);
     }
 
 
