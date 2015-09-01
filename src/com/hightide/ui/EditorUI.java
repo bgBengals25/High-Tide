@@ -173,16 +173,16 @@ public class EditorUI extends JFrame {
         // JToolBar Setup
         JToolBar toolbar = new JToolBar();
         container.add(toolbar, BorderLayout.NORTH);
-        JButton newButton = new JButton(new ImageIcon("res/drop29.png"));
+        JButton newButton = new JButton(new ImageIcon("res/icons/drop29.png"));
         newButton.setToolTipText("New Tab");
         newButton.addActionListener(new EditorEventListener());
         toolbar.add(newButton);
-        JButton closeButton = new JButton(new ImageIcon("res/cross105.png"));
+        JButton closeButton = new JButton(new ImageIcon("res/icons/cross105.png"));
         closeButton.setToolTipText("Close Current Tab");
         closeButton.addActionListener(new EditorEventListener());
         toolbar.add(closeButton);
         toolbar.addSeparator();
-        JButton saveButton = new JButton(new ImageIcon("res/anchor39.png"));
+        JButton saveButton = new JButton(new ImageIcon("res/icons/anchor39.png"));
         saveButton.setToolTipText("Save");
         saveButton.addActionListener(new ActionListener() {
             @Override
@@ -191,7 +191,7 @@ public class EditorUI extends JFrame {
             }
         });
         toolbar.add(saveButton);
-        JButton openButton = new JButton(new ImageIcon("res/padlock48.png"));
+        JButton openButton = new JButton(new ImageIcon("res/icons/padlock48.png"));
         openButton.setToolTipText("Open");
         openButton.addActionListener(new ActionListener() {
             @Override
@@ -201,7 +201,7 @@ public class EditorUI extends JFrame {
         });
         toolbar.add(openButton);
         toolbar.addSeparator();
-        JButton runButton = new JButton(new ImageIcon("res/playbutton.png"));
+        JButton runButton = new JButton(new ImageIcon("res/icons/playbutton.png"));
         runButton.setToolTipText("Run Script!");
         runButton.setMnemonic(KeyEvent.VK_R);
         toolbar.add(runButton);
@@ -408,7 +408,7 @@ public class EditorUI extends JFrame {
             if (source instanceof JMenuItem){
 
                 if (actionEvent.getActionCommand() == "New"){
-                    addEditorTab("Untitled", "", "", true, (StyledDocument) new DefaultStyledDocument());
+                    addEditorTab("Untitled", null, null, true, (StyledDocument) new DefaultStyledDocument());
                 }else if (actionEvent.getActionCommand() == "Close") {
                     removeSelectedEditorTab();
                 }else if (actionEvent.getActionCommand() == "Save"){
@@ -417,7 +417,7 @@ public class EditorUI extends JFrame {
             }
             else {
                 if (source instanceof JButton) if (((JButton) actionEvent.getSource()).getToolTipText() == "New Tab")
-                    addEditorTab("Untitled", "", "", true, new DefaultStyledDocument());
+                    addEditorTab("Untitled", null, null, true, (StyledDocument) new DefaultStyledDocument());
                 else if (((JButton) actionEvent.getSource()).getToolTipText() == "Close Current Tab") {
                     removeSelectedEditorTab();
                 }
