@@ -17,7 +17,8 @@ public class EditorArea extends JTextPane{
 
     public EditorArea(String content, String path, Boolean saved, StyledDocument doc){
 
-        super(doc);
+        super();
+        setDocument(doc);
         setText(content);
         this.content = content;
         this.path = path;

@@ -1,10 +1,16 @@
 package com.hightide.ui;
 
+import com.hightide.highlight.HighlightManager;
+import com.hightide.highlight.syntax.theme.Theme;
+
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 
@@ -249,10 +255,6 @@ public class EditorUI extends JFrame {
         setVisible(true);
     }
 
-    public void exit() {
-
-
-    }
 
 
     public void selectAll(){
@@ -265,9 +267,11 @@ public class EditorUI extends JFrame {
 
 
 
-    public final void addEditorTab(String title, String content, String path, Boolean saved){
+    public final void addEditorTab(String title, String content, String path, Boolean saved, StyledDocument sd){
 
-        final EditorArea editor = new EditorArea(content, path, saved, EditorArea.DOC);
+        final EditorArea editor = new EditorArea(content, path, saved, sd);
+        Theme ocean = new Theme("Ocean", new File("res/themes/Ocean.xml"));
+        HighlightManager.bindHighlighter("Bash", editor, ocean);
         editor.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -382,7 +386,7 @@ public class EditorUI extends JFrame {
                     data = sb.toString();
                 } finally {
                     br.close();
-                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getPath(), true);
+                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getPath(), true, (StyledDocument) new DefaultStyledDocument());
                 }
             }
         }catch(Exception e){
@@ -404,18 +408,17 @@ public class EditorUI extends JFrame {
             if (source instanceof JMenuItem){
 
                 if (actionEvent.getActionCommand() == "New"){
-                    addEditorTab("Untitled", null, null, true);
+                    addEditorTab("Untitled", "", "", true, (StyledDocument) new DefaultStyledDocument());
                 }else if (actionEvent.getActionCommand() == "Close") {
                     removeSelectedEditorTab();
                 }else if (actionEvent.getActionCommand() == "Save"){
-
+                    saveSelectedTab();
                 }
             }
-            else if (source instanceof JButton){
-
-                if (((JButton)actionEvent.getSource()).getToolTipText() == "New Tab") {
-                    addEditorTab("Untitled", null, null, true);
-                }else if (((JButton)actionEvent.getSource()).getToolTipText() == "Close Current Tab"){
+            else {
+                if (source instanceof JButton) if (((JButton) actionEvent.getSource()).getToolTipText() == "New Tab")
+                    addEditorTab("Untitled", "", "", true, new DefaultStyledDocument());
+                else if (((JButton) actionEvent.getSource()).getToolTipText() == "Close Current Tab") {
                     removeSelectedEditorTab();
                 }
             }

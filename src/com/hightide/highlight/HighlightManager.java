@@ -9,7 +9,7 @@ import com.hightide.ui.EditorArea;
  */
 public class HighlightManager {
 
-    public void bindHighlighter(String hl, EditorArea ea, Theme th){
+    public static void bindHighlighter(String hl, EditorArea ea, Theme th){
         if (hl.equals("Bash")){
             BashHighlighter bh = new BashHighlighter(ea, th);
         }

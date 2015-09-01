@@ -4,17 +4,13 @@ import com.hightide.highlight.Highlighter;
 import com.hightide.highlight.syntax.theme.Theme;
 import com.hightide.ui.EditorArea;
 
-import javax.swing.text.JTextComponent;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.PrintWriter;
-import java.util.ArrayList;
 
 /**
  * Created by peter on 8/31/15.
@@ -27,6 +23,22 @@ public class BashHighlighter implements Highlighter {
     public BashHighlighter(EditorArea ea, Theme th){
 
         EDITOR_AREA = ea;
+        ea.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent keyEvent) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+                highlight();
+            }
+        });
         THEME = th;
         highlight();
     }
