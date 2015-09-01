@@ -34,6 +34,8 @@ public class BashHighlighter implements Highlighter {
     @Override
     public void highlight() {
 
+        removeStyles(EDITOR_AREA.getDocument());
+
         Style plaintext = EDITOR_AREA.addStyle("plaintext",null);
         StyleConstants.setForeground(plaintext, THEME.getPLAIN_TEXT_COLOR());
 
@@ -61,31 +63,23 @@ public class BashHighlighter implements Highlighter {
             brcmd.close();
             frcmd.close();
 
-
+            for (int i=0; i<keywords.length; i++) {
+                int pos = 0;
+                while ((pos = EDITOR_AREA.getContent().indexOf(keywords[i], pos)) >= 0) {
+                    EDITOR_AREA.getDocument().setCharacterAttributes(pos, pos+keywords[i].length(), EDITOR_AREA.getStyle("keywordtext"), true);
+                    pos += keywords[i].length();
+                }
+            }
+            for (int i=0; i<commands.length; i++) {
+                int pos = 0;
+                while ((pos = EDITOR_AREA.getContent().indexOf(commands[i], pos)) >= 0) {
+                    EDITOR_AREA.getDocument().setCharacterAttributes(pos, pos+commands[i].length(), EDITOR_AREA.getStyle("oskeywordtext"), true);
+                    pos += commands[i].length();
+                }
+            }
         } catch (Exception e) {
             System.out.println("Something went wrong:\n"+e.getMessage());
         }
-
-        EDITOR_AREA.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent keyEvent) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent keyEvent) {
-
-            }
-
-            @Override
-            public void keyReleased(KeyEvent keyEvent) {
-                String contents = EDITOR_AREA.getText();
-                String[] contentsSep = contents.split(" ");
-                for (int i = 0; i < contentsSep.length; i++) {
-
-                }
-            }
-        });
     }
 
     public void removeStyles(StyledDocument sd){
