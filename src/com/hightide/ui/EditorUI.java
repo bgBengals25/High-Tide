@@ -267,7 +267,7 @@ public class EditorUI extends JFrame {
 
     public final void addEditorTab(String title, String content, String path, Boolean saved){
 
-        final EditorArea editor = new EditorArea(content, path, saved);
+        final EditorArea editor = new EditorArea(content, path, saved, EditorArea.DOC);
         editor.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

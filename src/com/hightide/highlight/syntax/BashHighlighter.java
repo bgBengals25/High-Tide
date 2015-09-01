@@ -4,12 +4,17 @@ import com.hightide.highlight.Highlighter;
 import com.hightide.highlight.syntax.theme.Theme;
 import com.hightide.ui.EditorArea;
 
+import javax.swing.text.JTextComponent;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * Created by peter on 8/31/15.
@@ -44,7 +49,22 @@ public class BashHighlighter implements Highlighter {
         Style commenttext = EDITOR_AREA.addStyle("commenttext",null);
         StyleConstants.setForeground(commenttext, THEME.getCOMMENT_TEXT_COLOR());
 
-        FileReader fr = new FileReader("res/keywords/bash.kw");
+        try {
+            FileReader frkw = new FileReader("res/keywords/bash.kw");
+            BufferedReader brkw = new BufferedReader(frkw);
+            String[] keywords = brkw.readLine().split(" ");
+            brkw.close();
+            frkw.close();
+            FileReader frcmd = new FileReader("res/keywords/bash.cmd");
+            BufferedReader brcmd = new BufferedReader(frcmd);
+            String[] commands = brcmd.readLine().split(" ");
+            brcmd.close();
+            frcmd.close();
+
+
+        } catch (Exception e) {
+            System.out.println("Something went wrong:\n"+e.getMessage());
+        }
 
         EDITOR_AREA.addKeyListener(new KeyListener() {
             @Override
@@ -60,11 +80,19 @@ public class BashHighlighter implements Highlighter {
             @Override
             public void keyReleased(KeyEvent keyEvent) {
                 String contents = EDITOR_AREA.getText();
-                String [] contentsSep = contents.split(" ");
-                for(int i=0; i<contentsSep.length; i++){
+                String[] contentsSep = contents.split(" ");
+                for (int i = 0; i < contentsSep.length; i++) {
 
                 }
             }
         });
+    }
+
+    public void removeStyles(StyledDocument sd){
+        sd.removeStyle("plaintext");
+        sd.removeStyle("keywordtext");
+        sd.removeStyle("oskeywordtext");
+        sd.removeStyle("quotetext");
+        sd.removeStyle("commenttext");
     }
 }
