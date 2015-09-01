@@ -1,16 +1,12 @@
 package com.hightide.ui;
 
-import com.hightide.highlight.HighlightManager;
-import com.hightide.highlight.syntax.theme.Theme;
+import jsyntaxpane.syntaxkits.BashSyntaxKit;
 
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.PrintWriter;
 
@@ -269,9 +265,9 @@ public class EditorUI extends JFrame {
 
     public final void addEditorTab(String title, String content, String path, Boolean saved){
 
-        final EditorArea editor = new EditorArea(content, path, saved);
-        Theme ocean = new Theme("Ocean", new File("res/themes/Ocean.xml"));
-        HighlightManager.bindHighlighter("Bash", editor, ocean);
+        BashSyntaxKit.initKit();
+        final EditorArea editor = new EditorArea(content, path, saved, "bash");
+        editor.setContentType("text/bash");
         editor.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -285,7 +281,7 @@ public class EditorUI extends JFrame {
                     pup.show(editor, e.getX(), e.getY());
             }
         });
-        tabbedPane.addTab(title, new JScrollPane(editor));
+        tabbedPane.addTab(title, editor);
         editor.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent keyEvent) {
@@ -408,7 +404,7 @@ public class EditorUI extends JFrame {
             if (source instanceof JMenuItem){
 
                 if (actionEvent.getActionCommand() == "New"){
-                    addEditorTab("Untitled", null, null, true);
+                    addEditorTab("Untitled", "", "", true);
                 }else if (actionEvent.getActionCommand() == "Close") {
                     removeSelectedEditorTab();
                 }else if (actionEvent.getActionCommand() == "Save"){
@@ -417,7 +413,7 @@ public class EditorUI extends JFrame {
             }
             else {
                 if (source instanceof JButton) if (((JButton) actionEvent.getSource()).getToolTipText() == "New Tab")
-                    addEditorTab("Untitled", null, null, true);
+                    addEditorTab("Untitled", "", "", true);
                 else if (((JButton) actionEvent.getSource()).getToolTipText() == "Close Current Tab") {
                     removeSelectedEditorTab();
                 }

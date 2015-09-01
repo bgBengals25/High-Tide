@@ -1,28 +1,27 @@
 package com.hightide.ui;
 
 import javax.swing.*;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledDocument;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.util.Arrays;
 
 /**
  * Created by peter on 8/30/15.
  */
-public class EditorArea extends JTextPane{
+public class EditorArea extends JEditorPane{
 
     private String path;
     private String content;
     private Boolean saved;
-    public static StyledDocument DOC = (StyledDocument) new DefaultStyledDocument();
-    private StyledDocument doc;
 
-    public EditorArea(String content, String path, Boolean saved){
+    public EditorArea(String content, String path, Boolean saved, String lang){
 
-        super(DOC);
-        setText(content);
         this.content = content;
         this.path = path;
         this.saved = saved;
-        doc = DOC;
+
+        if(lang.equals("bash")){
+        }
     }
 
     public String getPath(){
@@ -43,10 +42,6 @@ public class EditorArea extends JTextPane{
 
     public Boolean isSaved() {
         return saved;
-    }
-
-    public StyledDocument getDocument() {
-        return doc;
     }
 
     public void setSaved(Boolean saved) {
