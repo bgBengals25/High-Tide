@@ -1,6 +1,7 @@
 package com.hightide.ui;
 
 import jsyntaxpane.syntaxkits.BashSyntaxKit;
+import jsyntaxpane.syntaxkits.PythonSyntaxKit;
 
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
@@ -265,9 +266,7 @@ public class EditorUI extends JFrame {
 
     public final void addEditorTab(String title, String content, String path, Boolean saved){
 
-        BashSyntaxKit.initKit();
-        final EditorArea editor = new EditorArea(content, path, saved, "bash");
-        editor.setContentType("text/bash");
+        final EditorArea editor = new EditorArea(content, path, saved, "application/x-bsh");
         editor.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -281,7 +280,8 @@ public class EditorUI extends JFrame {
                     pup.show(editor, e.getX(), e.getY());
             }
         });
-        tabbedPane.addTab(title, editor);
+        JScrollPane jsp = new JScrollPane(editor);
+        tabbedPane.addTab(title, jsp);
         editor.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent keyEvent) {
@@ -302,6 +302,10 @@ public class EditorUI extends JFrame {
 
             }
         });
+
+        BashSyntaxKit.initKit();
+        PythonSyntaxKit.initKit();
+        editor.setContentType("text/bash");
     }
 
 

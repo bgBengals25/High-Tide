@@ -14,13 +14,14 @@ public class EditorArea extends JEditorPane{
     private String content;
     private Boolean saved;
 
-    public EditorArea(String content, String path, Boolean saved, String lang){
+    public EditorArea(String content, String path, Boolean saved, String type){
 
+        super(type, content);
         this.content = content;
         this.path = path;
         this.saved = saved;
 
-        if(lang.equals("bash")){
+        if(type.equals("application/x-bsh")){
         }
     }
 
