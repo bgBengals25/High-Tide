@@ -1,6 +1,7 @@
 package com.hightide.ui;
 
 import com.alee.laf.WebLookAndFeel;
+import com.hightide.ui.manual.JManual;
 import com.hightide.ui.terminal.JTerminal;
 import jsyntaxpane.DefaultSyntaxKit;
 import jsyntaxpane.syntaxkits.BashSyntaxKit;
@@ -124,6 +125,12 @@ public class EditorUI extends JFrame {
         JMenu toolsMenu = new JMenu("Tools");
         menuBar.add(toolsMenu);
         JMenuItem miSearchManual = new JMenuItem("Search Manual");
+        miSearchManual.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JManual.openManual(null);
+            }
+        });
         toolsMenu.add(miSearchManual);
         toolsMenu.addSeparator();
         JMenuItem miSettings = new JMenuItem("Settings");
