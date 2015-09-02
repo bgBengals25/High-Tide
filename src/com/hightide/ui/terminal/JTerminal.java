@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -25,39 +26,32 @@ public class JTerminal extends JPanel {
         add(jsp, BorderLayout.CENTER);
     }
 
-    private void execute(String command){
+    private void execute(final String command){
 
         try {
-            Runtime rt = Runtime.getRuntime();
-            Process proc = rt.exec(command);
-
-            BufferedReader stdInput = new BufferedReader(new
-                    InputStreamReader(proc.getInputStream()));
-
-            BufferedReader stdError = new BufferedReader(new
-                    InputStreamReader(proc.getErrorStream()));
-
-            System.out.println("Here is the standard output of the command:\n");
-            String s;
-            Boolean more = true;
-            while (more) {
-                s = stdInput.readLine();
-                if (s != null) {
-                    jta.append(s);
-                }else more = false;
-            }
-
-            jta.append("\nErrors:\n");
-
-            more = true;
-            while (more){
-                s = stdError.readLine();
-                if (s != null) {
-                    jta.append(stdError.readLine());
-                }else{
-                    more = false;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Process process = new ProcessBuilder(command).start();
+                        InputStream is = process.getInputStream();
+                        InputStreamReader isr = new InputStreamReader(is);
+                        BufferedReader br = new BufferedReader(isr);
+                        String line;
+                        while (true) {
+                            line = br.readLine();
+                            if (line != null){
+                                jta.append(line);
+                            }
+                            Thread.sleep(100);
+                        }
+                    }catch(Exception e){
+                        System.out.println("Something went wrong: \n"+e.getMessage());
+                    }
                 }
-            }
+            }).start();
+
+
         }catch(Exception e){
             System.out.println("Something went wrong: \n"+e.getMessage());
         }
