@@ -387,6 +387,11 @@ public class EditorUI extends JFrame {
                     String newTitle = currentTitle.substring(0, currentTitle.indexOf("*"));
                     tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), newTitle);
                 }
+                if (ea.getPath().endsWith(".sh") || ea.getText().startsWith("#!/bin/bash")) {
+                    jtf.setText("bash " + ea.getPath());
+                } else if (ea.getPath().endsWith(".py")) {
+                    jtf.setText("python " + ea.getPath());
+                }
             }
         }catch(Exception e){
             System.out.println("Something went wrong:\n"+e.getMessage());
