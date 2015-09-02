@@ -1,19 +1,18 @@
 package com.hightide.ui;
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.Arrays;
 
 /**
  * Created by peter on 8/30/15.
  */
-public class EditorArea extends JEditorPane{
+@SuppressWarnings("unused")
+class EditorArea extends JEditorPane{
 
     private String path;
     private String content;
     private Boolean saved;
 
+    @SuppressWarnings("StatementWithEmptyBody")
     public EditorArea(String content, String path, Boolean saved, String type){
 
         super(type, content);

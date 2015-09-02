@@ -11,8 +11,7 @@ import java.io.InputStreamReader;
  */
 public class JTerminal extends JPanel {
 
-    private JTextArea jta;
-    private JScrollPane jsp;
+    private final JTextArea jta;
 
     public JTerminal(){
         super();
@@ -22,11 +21,11 @@ public class JTerminal extends JPanel {
         jta.setBackground(Color.BLACK);
         jta.setForeground(Color.WHITE);
         jta.setEditable(false);
-        jsp = new JScrollPane(jta);
+        JScrollPane jsp = new JScrollPane(jta);
         add(jsp, BorderLayout.CENTER);
     }
 
-    public void execute(String command){
+    private void execute(String command){
 
         try {
             Runtime rt = Runtime.getRuntime();
@@ -39,9 +38,9 @@ public class JTerminal extends JPanel {
                     InputStreamReader(proc.getErrorStream()));
 
             System.out.println("Here is the standard output of the command:\n");
-            String s = null;
+            String s;
             Boolean more = true;
-            while (more == true) {
+            while (more) {
                 s = stdInput.readLine();
                 if (s != null) {
                     jta.append(s);
@@ -51,7 +50,7 @@ public class JTerminal extends JPanel {
             jta.append("\nErrors:\n");
 
             more = true;
-            while (more == true){
+            while (more){
                 s = stdError.readLine();
                 if (s != null) {
                     jta.append(stdError.readLine());
@@ -64,6 +63,7 @@ public class JTerminal extends JPanel {
         }
     }
 
+    @SuppressWarnings("unused")
     public void run(File f, String runWith, String options){ //OPTIONS MUST BE BLANK NOT NULL IF NO OPTIONS
 
         execute(runWith+" "+f.getAbsolutePath()+" "+options);

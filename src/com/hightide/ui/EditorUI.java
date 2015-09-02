@@ -18,12 +18,12 @@ import java.io.PrintWriter;
 public class EditorUI extends JFrame {
 
     //private JTextArea textArea;
-    private JTabbedPane tabbedPane;
-    private JPopupMenu pup;
+    private final JTabbedPane tabbedPane;
+    private final JPopupMenu pup;
 
-    public int WINDOW_WIDTH = 800;
-    public int WINDOW_HEIGHT = 600;
-    public String WINDOW_INIT_TITLE = "High Tide Scripting Editor";
+    private final int WINDOW_WIDTH = 800;
+    private final int WINDOW_HEIGHT = 600;
+    private final String WINDOW_INIT_TITLE = "High Tide Scripting Editor";
 
     public EditorUI(){
 
@@ -264,7 +264,7 @@ public class EditorUI extends JFrame {
 
 
 
-    public void selectAll(){
+    private void selectAll(){
 
         JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
         EditorArea ea = (EditorArea)viewport.getView();
@@ -274,7 +274,7 @@ public class EditorUI extends JFrame {
 
 
 
-    public final void addEditorTab(String title, String content, String path, Boolean saved){
+    private void addEditorTab(String title, String content, String path, Boolean saved){
 
         final EditorArea editor = new EditorArea(content, path, saved, "application/x-bsh");
         editor.addMouseListener(new MouseAdapter() {
@@ -317,11 +317,12 @@ public class EditorUI extends JFrame {
         PythonSyntaxKit.initKit();
         editor.setContentType("text/bash");
         editor.setText(content);
+        editor.setCaretPosition(0);
     }
 
 
 
-    public void removeSelectedEditorTab(){
+    private void removeSelectedEditorTab(){
 
         int selectedTabIndex = tabbedPane.getSelectedIndex();
         tabbedPane.removeTabAt(selectedTabIndex);
@@ -329,7 +330,7 @@ public class EditorUI extends JFrame {
 
 
 
-    public void saveSelectedTab(){
+    private void saveSelectedTab(){
 
         try {
             System.out.println("Save!");
@@ -340,8 +341,7 @@ public class EditorUI extends JFrame {
             }else{
                 PrintWriter writer = new PrintWriter(ea.getPath(), "UTF-8");
                 String[] lines = ea.getText().split("\\n");
-                for (int i=0; i<lines.length; i++)
-                    writer.println(lines[i]);
+                for (String line : lines) writer.println(line);
                 writer.flush();
                 writer.close();
                 ea.setSaved(true);
@@ -366,7 +366,7 @@ public class EditorUI extends JFrame {
             JFileChooser jfc = new JFileChooser();
             jfc.setDialogTitle("Save As...");
             int userSelection = jfc.showSaveDialog(this);
-            if (userSelection == jfc.APPROVE_OPTION)
+            if (userSelection == JFileChooser.APPROVE_OPTION)
                 ea.setPath(jfc.getSelectedFile().getAbsolutePath());
                 tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), jfc.getSelectedFile().getName());
             saveSelectedTab();
@@ -377,13 +377,13 @@ public class EditorUI extends JFrame {
 
 
 
-    public void openFile(){
+    private void openFile(){
         try{
             String data = "Failed to Load File!!!";
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Open...");
             int userSelection = fileChooser.showOpenDialog(this);
-            if (userSelection == fileChooser.APPROVE_OPTION){
+            if (userSelection == JFileChooser.APPROVE_OPTION){
                 BufferedReader br = new BufferedReader(new FileReader(fileChooser.getSelectedFile()));
                 try {
                     StringBuilder sb = new StringBuilder();
@@ -418,18 +418,18 @@ public class EditorUI extends JFrame {
 
             if (source instanceof JMenuItem){
 
-                if (actionEvent.getActionCommand() == "New"){
+                if (actionEvent.getActionCommand().equals("New")){
                     addEditorTab("Untitled", "", "", true);
-                }else if (actionEvent.getActionCommand() == "Close") {
+                }else if (actionEvent.getActionCommand().equals("Close")) {
                     removeSelectedEditorTab();
-                }else if (actionEvent.getActionCommand() == "Save"){
+                }else if (actionEvent.getActionCommand().equals("Save")){
                     saveSelectedTab();
                 }
             }
             else {
-                if (source instanceof JButton) if (((JButton) actionEvent.getSource()).getToolTipText() == "New Tab")
+                if (source instanceof JButton) if (((JButton) actionEvent.getSource()).getToolTipText().equals("New Tab"))
                     addEditorTab("Untitled", "", "", true);
-                else if (((JButton) actionEvent.getSource()).getToolTipText() == "Close Current Tab") {
+                else if (((JButton) actionEvent.getSource()).getToolTipText().equals("Close Current Tab")) {
                     removeSelectedEditorTab();
                 }
             }
