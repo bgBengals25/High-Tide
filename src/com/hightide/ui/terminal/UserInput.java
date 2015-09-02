@@ -5,5 +5,5 @@ package com.hightide.ui.terminal;
  */
 public interface UserInput {
 
-    public int getUserInputStart();
+    int getUserInputStart();
 }

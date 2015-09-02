@@ -5,9 +5,9 @@ package com.hightide.ui.terminal;
  */
 public interface CommandListener {
 
-    public void commandOutput(String text);
+    void commandOutput(String text);
 
-    public void commandCompleted(String cmd, int result);
+    void commandCompleted(String cmd, int result);
 
-    public void commandFailed(Exception exp);
+    void commandFailed(Exception exp);
 }

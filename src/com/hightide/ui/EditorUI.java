@@ -421,8 +421,8 @@ public class EditorUI extends JFrame {
         });
 
         DefaultSyntaxKit.initKit();
-        BashSyntaxKit.initKit();
-        PythonSyntaxKit.initKit();
+        DefaultSyntaxKit.initKit();
+        DefaultSyntaxKit.initKit();
 
         if (editor.getPath().endsWith(".sh") || editor.getText().startsWith("#!/bin/bash")) {
             System.out.println("Bash");
