@@ -1,11 +1,13 @@
 package com.hightide.ui.terminal;
 
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 /**
  * Created by peter on 9/1/15.
  */
-public class ProtectedDocumentFilter extends DocumentFilter{
+public class ProtectedDocumentFilter extends DocumentFilter {
 
     private UserInput userInput;
 

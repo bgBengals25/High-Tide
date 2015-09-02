@@ -21,7 +21,9 @@ public class JTerminal extends JPanel implements CommandListener, Terminal{
         cmd = new Command(this);
 
         setLayout(new BorderLayout());
-        textArea = new JTextArea(20, 30);
+        textArea = new JTextArea();
+        textArea.setBackground(Color.BLACK);
+        textArea.setForeground(Color.WHITE);
         ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new ProtectedDocumentFilter(this));
         add(new JScrollPane(textArea));
 
@@ -44,6 +46,8 @@ public class JTerminal extends JPanel implements CommandListener, Terminal{
                     }
                 } catch (BadLocationException ex) {
                     System.out.println(ex.getMessage());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
                 oldAction.actionPerformed(e);
             }

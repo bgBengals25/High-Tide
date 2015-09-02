@@ -2,6 +2,7 @@ package com.hightide.ui.terminal;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Created by peter on 9/1/15.
