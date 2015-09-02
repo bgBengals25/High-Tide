@@ -2,6 +2,7 @@ package com.hightide.ui;
 
 import com.alee.laf.WebLookAndFeel;
 import com.hightide.ui.terminal.JTerminal;
+import jsyntaxpane.DefaultSyntaxKit;
 import jsyntaxpane.syntaxkits.BashSyntaxKit;
 import jsyntaxpane.syntaxkits.PythonSyntaxKit;
 
@@ -9,9 +10,7 @@ import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.PrintWriter;
+import java.io.*;
 
 /**
  * Created by peter on 8/30/15.
@@ -22,6 +21,10 @@ public class EditorUI extends JFrame {
     private final JTabbedPane tabbedPane;
     private final JPopupMenu pup;
     private JTextField jtf;
+    private ButtonGroup langBg;
+    private JRadioButtonMenuItem rbmiPlain;
+    private JRadioButtonMenuItem rbmiBash;
+    private JRadioButtonMenuItem rbmiPython;
 
     private final int WINDOW_WIDTH = 800;
     private final int WINDOW_HEIGHT = 600;
@@ -88,7 +91,7 @@ public class EditorUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 int reply = JOptionPane.showConfirmDialog(null, "Exit High Tide?", "High Tide - Exit", JOptionPane.YES_NO_OPTION);
-                if (reply == JOptionPane.YES_OPTION){
+                if (reply == JOptionPane.YES_OPTION) {
                     System.exit(0);
                 }
             }
@@ -123,11 +126,22 @@ public class EditorUI extends JFrame {
         menuBar.add(toolsMenu);
         JMenuItem miSearchManual = new JMenuItem("Search Manual");
         toolsMenu.add(miSearchManual);
-        JMenuItem miSearchManualFor = new JMenuItem("Search Manual For...");
-        toolsMenu.add(miSearchManualFor);
         toolsMenu.addSeparator();
         JMenuItem miSettings = new JMenuItem("Settings");
         toolsMenu.add(miSettings);
+        JMenu miLanguage = new JMenu("Language");
+        langBg = new ButtonGroup();
+        rbmiPlain = new JRadioButtonMenuItem("Plain Text");
+        langBg.add(rbmiPlain);
+        miLanguage.add(rbmiPlain);
+        rbmiBash = new JRadioButtonMenuItem("Bash");
+        langBg.add(rbmiBash);
+        miLanguage.add(rbmiBash);
+        rbmiPython = new JRadioButtonMenuItem("Python");
+        langBg.add(rbmiPython);
+        miLanguage.add(rbmiPython);
+        toolsMenu.add(miLanguage);
+        autoSelectLanguage();
 
 
 
@@ -320,6 +334,11 @@ public class EditorUI extends JFrame {
         setVisible(true);
     }
 
+    public void selectLanguage() {
+
+
+    }
+
 
 
     private void selectAll(){
@@ -371,16 +390,21 @@ public class EditorUI extends JFrame {
             }
         });
 
+        DefaultSyntaxKit.initKit();
+        BashSyntaxKit.initKit();
+        PythonSyntaxKit.initKit();
+
         if (editor.getPath().endsWith(".sh") || editor.getText().startsWith("#!/bin/bash")) {
             System.out.println("Bash");
             jtf.setText("bash " + editor.getPath());
+            editor.setContentType("text/bash");
         } else if (editor.getPath().endsWith(".py")) {
             jtf.setText("python " + editor.getPath());
+            editor.setContentType("text/python");
+        } else {
+            editor.setContentType("text/plain");
         }
 
-        BashSyntaxKit.initKit();
-        PythonSyntaxKit.initKit();
-        editor.setContentType("text/bash");
         editor.setText(content);
         editor.setCaretPosition(0);
     }
@@ -417,8 +441,12 @@ public class EditorUI extends JFrame {
                 }
                 if (ea.getPath().endsWith(".sh") || ea.getText().startsWith("#!/bin/bash")) {
                     jtf.setText("bash " + ea.getPath());
+                    ea.setContentType("text/bash");
                 } else if (ea.getPath().endsWith(".py")) {
                     jtf.setText("python " + ea.getPath());
+                    ea.setContentType("text/python");
+                } else {
+                    ea.setContentType("text/plain");
                 }
             }
         }catch(Exception e){
