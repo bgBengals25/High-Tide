@@ -14,7 +14,7 @@ public class JTerminal extends JPanel implements CommandListener, Terminal{
 
     private JTextArea textArea;
     private int userInputStart = 0;
-    private Command cmd;
+    public Command cmd;
 
     public JTerminal() {
 

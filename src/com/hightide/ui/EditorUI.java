@@ -230,7 +230,15 @@ public class EditorUI extends JFrame {
         runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                term.commandOutput(jtf.getText());
+                if(!term.cmd.isRunning()) {
+                    term.cmd.execute(jtf.getText());
+                }else{
+                    try {
+                        term.cmd.send(jtf.getText());
+                    }catch(Exception ex){
+                        System.out.println("Something went wrong: \n"+ex.getStackTrace());
+                    }
+                }
             }
         });
         toolbar.add(runButton);
@@ -336,6 +344,7 @@ public class EditorUI extends JFrame {
         });
 
         if (editor.getPath().endsWith(".sh") || editor.getText().startsWith("#!/bin/bash")) {
+            System.out.println("Bash");
             jtf.setText("bash " + editor.getPath());
         } else if (editor.getPath().endsWith(".py")) {
             jtf.setText("python " + editor.getPath());
