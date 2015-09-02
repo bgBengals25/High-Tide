@@ -21,10 +21,9 @@ public class EditorUI extends JFrame {
     private final JTabbedPane tabbedPane;
     private final JPopupMenu pup;
     private JTextField jtf;
-    private ButtonGroup langBg;
-    private JRadioButtonMenuItem rbmiPlain;
-    private JRadioButtonMenuItem rbmiBash;
-    private JRadioButtonMenuItem rbmiPython;
+    private JMenuItem rbmiPlain;
+    private JMenuItem rbmiBash;
+    private JMenuItem rbmiPython;
 
     private final int WINDOW_WIDTH = 800;
     private final int WINDOW_HEIGHT = 600;
@@ -130,18 +129,47 @@ public class EditorUI extends JFrame {
         JMenuItem miSettings = new JMenuItem("Settings");
         toolsMenu.add(miSettings);
         JMenu miLanguage = new JMenu("Language");
-        langBg = new ButtonGroup();
-        rbmiPlain = new JRadioButtonMenuItem("Plain Text");
-        langBg.add(rbmiPlain);
+        rbmiPlain = new JMenuItem("Plain Text");
+        rbmiPlain.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
+                EditorArea ea = (EditorArea)viewport.getView();
+                String textTemp = ea.getText();
+                ea.setText(null);
+                ea.setContentType("text/plain");
+                ea.setText(textTemp);
+            }
+        });
         miLanguage.add(rbmiPlain);
-        rbmiBash = new JRadioButtonMenuItem("Bash");
-        langBg.add(rbmiBash);
+        rbmiBash = new JMenuItem("Bash");
+        rbmiBash.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
+                EditorArea ea = (EditorArea)viewport.getView();
+                String textTemp = ea.getText();
+                ea.setText(null);
+                ea.setContentType("text/bash");
+                ea.setText(textTemp);
+            }
+        });
         miLanguage.add(rbmiBash);
-        rbmiPython = new JRadioButtonMenuItem("Python");
-        langBg.add(rbmiPython);
+        rbmiPython = new JMenuItem("Python");
+        rbmiPython.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
+                EditorArea ea = (EditorArea)viewport.getView();
+                String textTemp = ea.getText();
+                ea.setText(null);
+                ea.setContentType("text/python");
+                ea.setText(textTemp);
+            }
+        });
         miLanguage.add(rbmiPython);
         toolsMenu.add(miLanguage);
-        autoSelectLanguage();
+        selectLanguage("plain");
 
 
 
@@ -334,9 +362,11 @@ public class EditorUI extends JFrame {
         setVisible(true);
     }
 
-    public void selectLanguage() {
+    public void selectLanguage(String lang) {
 
+        if (lang.equals("plain")){
 
+        }
     }
 
 
