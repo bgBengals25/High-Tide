@@ -1,65 +1,87 @@
 package com.hightide.ui.terminal;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.awt.event.ActionEvent;
+import java.io.*;
 
 /**
  * Created by peter on 9/1/15.
  */
-public class JTerminal extends JPanel {
+public class JTerminal extends JPanel implements CommandListener, Terminal{
 
-    private final JTextArea jta;
+    private JTextArea textArea;
+    private int userInputStart = 0;
+    private Command cmd;
 
-    public JTerminal(){
-        super();
+    public JTerminal() {
+
+        cmd = new Command(this);
 
         setLayout(new BorderLayout());
-        jta = new JTextArea("-- HIGH TIDE SCRIPTING EDITOR VERSION 0.0 --\n");
-        jta.setBackground(Color.BLACK);
-        jta.setForeground(Color.WHITE);
-        jta.setEditable(false);
-        JScrollPane jsp = new JScrollPane(jta);
-        add(jsp, BorderLayout.CENTER);
-    }
+        textArea = new JTextArea(20, 30);
+        ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new ProtectedDocumentFilter(this));
+        add(new JScrollPane(textArea));
 
-    private void execute(final String command){
+        InputMap im = textArea.getInputMap(WHEN_FOCUSED);
+        ActionMap am = textArea.getActionMap();
 
-        try {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Process process = new ProcessBuilder(command).start();
-                        InputStream is = process.getInputStream();
-                        InputStreamReader isr = new InputStreamReader(is);
-                        BufferedReader br = new BufferedReader(isr);
-                        String line;
-                        while (true) {
-                            line = br.readLine();
-                            if (line != null){
-                                jta.append(line);
-                            }
-                            Thread.sleep(100);
-                        }
-                    }catch(Exception e){
-                        System.out.println("Something went wrong: \n"+e.getMessage());
+        final Action oldAction = am.get("insert-break");
+        am.put("insert-break", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int range = textArea.getCaretPosition() - userInputStart;
+                try {
+                    String text = textArea.getText(userInputStart, range).trim();
+                    System.out.println("[" + text + "]");
+                    userInputStart += range;
+                    if (!cmd.isRunning()) {
+                        cmd.execute(text);
+                    } else {
+                        cmd.send(text + "\n");
                     }
+                } catch (BadLocationException ex) {
+                    System.out.println(ex.getMessage());
                 }
-            }).start();
+                oldAction.actionPerformed(e);
+            }
+        });
 
-
-        }catch(Exception e){
-            System.out.println("Something went wrong: \n"+e.getMessage());
-        }
     }
 
-    @SuppressWarnings("unused")
-    public void run(File f, String runWith, String options){ //OPTIONS MUST BE BLANK NOT NULL IF NO OPTIONS
+    @Override
+    public void commandOutput(String text) {
+        SwingUtilities.invokeLater(new AppendTask(this, text));
+    }
 
-        execute(runWith+" "+f.getAbsolutePath()+" "+options);
+    @Override
+    public void commandFailed(Exception exp) {
+        SwingUtilities.invokeLater(new AppendTask(this, "Command failed - " + exp.getMessage()));
+    }
+
+    @Override
+    public void commandCompleted(String cmd, int result) {
+        appendText("\n> " + cmd + " exited with " + result + "\n");
+        appendText("\n");
+    }
+
+    protected void updateUserInputPos() {
+        int pos = textArea.getCaretPosition();
+        textArea.setCaretPosition(textArea.getText().length());
+        userInputStart = pos;
+
+    }
+
+    @Override
+    public int getUserInputStart() {
+        return userInputStart;
+    }
+
+    @Override
+    public void appendText(String text) {
+        textArea.append(text);
+        updateUserInputPos();
     }
 }

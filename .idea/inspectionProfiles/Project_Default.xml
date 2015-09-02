@@ -11,7 +11,7 @@
     <inspection_tool class="AnonymousInnerClass" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="ArrayEquality" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="AssignmentToCatchBlockParameter" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="AssignmentToCollectionFieldFromParameter" enabled="true" level="ERROR" enabled_by_default="true">
+    <inspection_tool class="AssignmentToCollectionFieldFromParameter" enabled="false" level="ERROR" enabled_by_default="false">
       <option name="ignorePrivateMethods" value="true" />
     </inspection_tool>
     <inspection_tool class="AssignmentToDateFieldFromParameter" enabled="true" level="ERROR" enabled_by_default="true">
