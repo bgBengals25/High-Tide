@@ -2,6 +2,7 @@
   <library name="res">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/res/jars/jsyntaxpane.jar!/" />
+      <root url="jar://$PROJECT_DIR$/res/jars/weblaf.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -1,5 +1,6 @@
 package com.hightide.ui;
 
+import com.alee.laf.WebLookAndFeel;
 import com.hightide.ui.terminal.JTerminal;
 import jsyntaxpane.syntaxkits.BashSyntaxKit;
 import jsyntaxpane.syntaxkits.PythonSyntaxKit;
@@ -27,6 +28,13 @@ public class EditorUI extends JFrame {
     private final String WINDOW_INIT_TITLE = "High Tide Scripting Editor";
 
     public EditorUI(){
+
+
+        try {
+            UIManager.setLookAndFeel(new WebLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
 
         // Set up Menu Bar
         JMenuBar menuBar = new JMenuBar();
@@ -113,10 +121,6 @@ public class EditorUI extends JFrame {
         // Set up Tools Menu
         JMenu toolsMenu = new JMenu("Tools");
         menuBar.add(toolsMenu);
-        JMenu RunAs = new JMenu("Run As...");
-        JMenuItem miBashScript = new JMenuItem("Bash Script");
-        RunAs.add(miBashScript);
-        toolsMenu.add(RunAs);
         JMenuItem miSearchManual = new JMenuItem("Search Manual");
         toolsMenu.add(miSearchManual);
         JMenuItem miSearchManualFor = new JMenuItem("Search Manual For...");
@@ -212,6 +216,7 @@ public class EditorUI extends JFrame {
         JLabel runLabel = new JLabel("Command: ");
         toolbar.add(runLabel);
         jtf = new JTextField();
+        jtf.setColumns(35);
         try {
             JViewport viewport = ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport();
             EditorArea sea = (EditorArea) viewport.getView();
@@ -230,13 +235,36 @@ public class EditorUI extends JFrame {
         runButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!term.cmd.isRunning()) {
-                    term.cmd.execute(jtf.getText());
+                JViewport viewport = ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport();
+                EditorArea sea = (EditorArea) viewport.getView();
+                if (sea.getPath().endsWith(".sh") || sea.getText().startsWith("#!/bin/bash")) {
+                    jtf.setText("bash " + sea.getPath());
+                } else if (sea.getPath().endsWith(".py")) {
+                    jtf.setText("python " + sea.getPath());
+                }
+                if (sea.isSaved()) {
+                    if (!term.cmd.isRunning()) {
+                        term.cmd.execute(jtf.getText());
+                    } else {
+                        try {
+                            term.cmd.send(jtf.getText());
+                        } catch (Exception ex) {
+                            System.out.println("Something went wrong: \n" + ex.getStackTrace());
+                        }
+                    }
                 }else{
-                    try {
-                        term.cmd.send(jtf.getText());
-                    }catch(Exception ex){
-                        System.out.println("Something went wrong: \n"+ex.getStackTrace());
+                    int saveQuestion = JOptionPane.showConfirmDialog(null, "File must be saved before executed! Save now?", "High Tide - Save?", JOptionPane.YES_NO_OPTION);
+                    if (saveQuestion == JOptionPane.YES_OPTION){
+                        saveSelectedTab();
+                        if (!term.cmd.isRunning()) {
+                            term.cmd.execute(jtf.getText());
+                        } else {
+                            try {
+                                term.cmd.send(jtf.getText());
+                            } catch (Exception ex) {
+                                System.out.println("Something went wrong: \n" + ex.getStackTrace());
+                            }
+                        }
                     }
                 }
             }
