@@ -20,6 +20,7 @@ public class EditorUI extends JFrame {
     //private JTextArea textArea;
     private final JTabbedPane tabbedPane;
     private final JPopupMenu pup;
+    private JTextField jtf;
 
     private final int WINDOW_WIDTH = 800;
     private final int WINDOW_HEIGHT = 600;
@@ -208,9 +209,30 @@ public class EditorUI extends JFrame {
         });
         toolbar.add(openButton);
         toolbar.addSeparator();
+        JLabel runLabel = new JLabel("Command: ");
+        toolbar.add(runLabel);
+        jtf = new JTextField();
+        try {
+            JViewport viewport = ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport();
+            EditorArea sea = (EditorArea) viewport.getView();
+            if (sea.getPath().endsWith(".sh") || sea.getText().startsWith("#!/bin/bash")) {
+                jtf.setText("bash " + sea.getPath());
+            } else if (sea.getPath().endsWith(".py")) {
+                jtf.setText("python " + sea.getPath());
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        toolbar.add(jtf);
         JButton runButton = new JButton(new ImageIcon("res/icons/playbutton.png"));
         runButton.setToolTipText("Run Script!");
         runButton.setMnemonic(KeyEvent.VK_R);
+        runButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                term.commandOutput(jtf.getText());
+            }
+        });
         toolbar.add(runButton);
 
 
@@ -313,6 +335,12 @@ public class EditorUI extends JFrame {
             }
         });
 
+        if (editor.getPath().endsWith(".sh") || editor.getText().startsWith("#!/bin/bash")) {
+            jtf.setText("bash " + editor.getPath());
+        } else if (editor.getPath().endsWith(".py")) {
+            jtf.setText("python " + editor.getPath());
+        }
+
         BashSyntaxKit.initKit();
         PythonSyntaxKit.initKit();
         editor.setContentType("text/bash");
@@ -336,7 +364,7 @@ public class EditorUI extends JFrame {
             System.out.println("Save!");
             JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
             EditorArea ea = (EditorArea)viewport.getView();
-            if (ea.getPath() == null) {
+            if (ea.getPath() == null || ea.getPath().equals("")) {
                 saveSelectedTabAs();
             }else{
                 PrintWriter writer = new PrintWriter(ea.getPath(), "UTF-8");
@@ -397,7 +425,7 @@ public class EditorUI extends JFrame {
                     data = sb.toString();
                 } finally {
                     br.close();
-                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getPath(), true);
+                    addEditorTab(fileChooser.getSelectedFile().getName(), data, fileChooser.getSelectedFile().getAbsolutePath(), true);
                 }
             }
         }catch(Exception e){

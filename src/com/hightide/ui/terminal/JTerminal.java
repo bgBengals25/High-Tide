@@ -53,6 +53,7 @@ public class JTerminal extends JPanel implements CommandListener, Terminal{
             }
         });
 
+        appendText("--- HIGH TIDE SCRIPT EDITOR VERSION 0.0 ---\n");
     }
 
     @Override
