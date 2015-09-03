@@ -19,9 +19,9 @@ public class JManual {
     private static JTextArea jta;
     private static JScrollPane jsp;
 
-    public static void main(String[] args){
+    /*public static void main(String[] args){
         openManual(null);
-    }
+    }*/
 
     public static void openManual(JComponent c){
 
