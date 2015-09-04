@@ -18,7 +18,7 @@ import java.io.*;
  */
 public class EditorUI extends JFrame {
 
-    //private JTextArea textArea;
+    // Declare variables for use within the class
     private final JTabbedPane tabbedPane;
     private final JPopupMenu pup;
     private JTextField jtf;
@@ -26,56 +26,73 @@ public class EditorUI extends JFrame {
     private JMenuItem rbmiBash;
     private JMenuItem rbmiPython;
 
+    // Declare variables used for managing the JFrame
     private final int WINDOW_WIDTH = 800;
     private final int WINDOW_HEIGHT = 600;
     private final String WINDOW_INIT_TITLE = "High Tide Scripting Editor";
 
+    // Main constructor
+    // Sets up UI
     public EditorUI(){
 
 
+        // Catch any issues with LAF
         try {
-            UIManager.setLookAndFeel(new WebLookAndFeel());
+            UIManager.setLookAndFeel(new WebLookAndFeel()); // Set Look and Feel
         } catch (UnsupportedLookAndFeelException e) {
             e.printStackTrace();
         }
 
         // Set up Menu Bar
         JMenuBar menuBar = new JMenuBar();
-        setJMenuBar(menuBar);
+        setJMenuBar(menuBar); // Attach JMenuBar to the frame
+
         // Set up File Menu
         JMenu fileMenu = new JMenu("File");
-        menuBar.add(fileMenu);
+        menuBar.add(fileMenu); // Add File Menu to the Menu Bar
+
+        // Create "New" button in dropdown
         JMenuItem miNew = new JMenuItem("New");
-        miNew.setMnemonic(KeyEvent.VK_N);
-        miNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK));
-        miNew.addActionListener(new EditorEventListener());
-        fileMenu.add(miNew);
+        miNew.setMnemonic(KeyEvent.VK_N); // Set visual mnemonic CTRL+N
+        miNew.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.CTRL_MASK)); // Set the shortcut to CTRL+N
+        miNew.addActionListener(new EditorEventListener()); // See 'private class EditorEventListener' below
+        fileMenu.add(miNew); // Add the "New" Item
+
+        // Create "Open" button in dropdown
         JMenuItem miOpen = new JMenuItem("Open...");
-        miOpen.setMnemonic(KeyEvent.VK_O);
-        miOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+        miOpen.setMnemonic(KeyEvent.VK_O); // Set visual mnemonic CTRL+O
+        miOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK)); // Set the shortcut to CTRL+O
         miOpen.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 openFile();
-            }
+            }  // When clicked, open a file
         });
-        fileMenu.add(miOpen);
+        fileMenu.add(miOpen); // Add the "Open" item to the dropdown
+
+        // Create "Close" button in dropdown
         JMenuItem miClose = new JMenuItem("Close");
-        miClose.setMnemonic(KeyEvent.VK_ESCAPE);
-        miClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, KeyEvent.CTRL_MASK));
-        miClose.addActionListener(new EditorEventListener());
-        fileMenu.add(miClose);
+        miClose.setMnemonic(KeyEvent.VK_ESCAPE); // Set visual mnemonic CTRL+ESCAPE
+        miClose.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, KeyEvent.CTRL_MASK)); // Set shortcut to CTRL+ESCAPE
+        miClose.addActionListener(new EditorEventListener()); // See 'private class EditorEventListener' below
+        fileMenu.add(miClose); // Add the "Close" Item
+
+        // Create visual separation between JMenuItems
         fileMenu.addSeparator();
+
+        // Create "Save" button in dropdown
         JMenuItem miSave = new JMenuItem("Save");
-        miSave.setMnemonic(KeyEvent.VK_S);
+        miSave.setMnemonic(KeyEvent.VK_S); // set visual mnemonic CTRL+S
         miSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                saveSelectedTab();
+                saveSelectedTab(); // When clicked, save file in currently selected tab
             }
         });
-        miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK));
-        fileMenu.add(miSave);
+        miSave.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK)); // Set shortcut to CTRL+S
+        fileMenu.add(miSave); // Add the "Save" Item
+
+
         JMenuItem miSaveAs = new JMenuItem("Save As...");
         miSaveAs.addActionListener(new ActionListener() {
             @Override
@@ -140,8 +157,8 @@ public class EditorUI extends JFrame {
         rbmiPlain.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
-                EditorArea ea = (EditorArea)viewport.getView();
+                JViewport viewport = ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport();
+                EditorArea ea = (EditorArea) viewport.getView();
                 String textTemp = ea.getText();
                 ea.setText(null);
                 ea.setContentType("text/plain");
@@ -153,8 +170,8 @@ public class EditorUI extends JFrame {
         rbmiBash.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
-                EditorArea ea = (EditorArea)viewport.getView();
+                JViewport viewport = ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport();
+                EditorArea ea = (EditorArea) viewport.getView();
                 String textTemp = ea.getText();
                 ea.setText(null);
                 ea.setContentType("text/bash");
@@ -166,8 +183,8 @@ public class EditorUI extends JFrame {
         rbmiPython.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JViewport viewport = ((JScrollPane)tabbedPane.getSelectedComponent()).getViewport();
-                EditorArea ea = (EditorArea)viewport.getView();
+                JViewport viewport = ((JScrollPane) tabbedPane.getSelectedComponent()).getViewport();
+                EditorArea ea = (EditorArea) viewport.getView();
                 String textTemp = ea.getText();
                 ea.setText(null);
                 ea.setContentType("text/python");
@@ -176,7 +193,6 @@ public class EditorUI extends JFrame {
         });
         miLanguage.add(rbmiPython);
         toolsMenu.add(miLanguage);
-        selectLanguage("plain");
 
 
 
@@ -275,6 +291,7 @@ public class EditorUI extends JFrame {
                 jtf.setText("python " + sea.getPath());
             }
         }catch(Exception e){
+            System.out.println("If program just started, this is normal");
             e.printStackTrace();
         }
         toolbar.add(jtf);
@@ -367,13 +384,6 @@ public class EditorUI extends JFrame {
         setLocationRelativeTo(null);
         setTitle(WINDOW_INIT_TITLE);
         setVisible(true);
-    }
-
-    public void selectLanguage(String lang) {
-
-        if (lang.equals("plain")){
-
-        }
     }
 
 
